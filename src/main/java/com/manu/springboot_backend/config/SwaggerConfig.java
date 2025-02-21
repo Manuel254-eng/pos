@@ -16,7 +16,7 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Point of sale API")
                         .version("1.0")
-                        .description("API documentation for pos management system"))
+                        .description("API documentation for a dynamic pos system"))
                 .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("BearerAuth", new SecurityScheme()

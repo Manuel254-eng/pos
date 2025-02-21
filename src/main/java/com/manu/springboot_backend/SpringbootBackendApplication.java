@@ -1,7 +1,5 @@
 package com.manu.springboot_backend;
 
-import com.manu.springboot_backend.model.Task;
-import com.manu.springboot_backend.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

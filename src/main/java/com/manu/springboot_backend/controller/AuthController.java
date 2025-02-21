@@ -43,7 +43,7 @@ public class AuthController {
 //        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 //
 //        // Assign role, default to BORROWER if not provided
-//        user.setRole(registerRequest.getRole() != null ? registerRequest.getRole() : Role.CUSTOMER);
+//        user.setRole(registerRequest.getRole() != null ? registerRequest.getRole() : Role.CASHIER);
 //
 //        User savedUser = userRepository.save(user);
 //        return ResponseEntity

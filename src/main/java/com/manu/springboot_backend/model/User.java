@@ -15,6 +15,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String fullName;
+
     private String name;
 
     @Column(nullable = false, unique = true)
@@ -31,15 +33,20 @@ public class User {
 
     private String address; // Optional address field
 
-    private double creditScore = 0.0; // Default credit score to 0.0
+    @ManyToOne
+    @JoinColumn(name = "published_by", referencedColumnName = "id")
+    private User publishedBy; // Reference to another user who published this user
 
-    public User(String name, String email, String password, Role role, String phone, String address, double creditScore) {
+
+
+
+    public User(String name, String email, String password, Role role, String phone, String address) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
         this.phone = phone;
         this.address = address;
-        this.creditScore = creditScore;
+
     }
 }
