@@ -24,4 +24,5 @@ public class ItemResponseDTO {
     private Branch branch;
     private ProductCategory productCategory;
     private BigDecimal price;
+    private SupplierDTO supplier;
 }

@@ -1,9 +1,6 @@
 package com.manu.springboot_backend.controller;
 
-import com.manu.springboot_backend.dto.BranchDTO;
-import com.manu.springboot_backend.dto.ItemResponseDTO;
-import com.manu.springboot_backend.dto.ItemsDTO;
-import com.manu.springboot_backend.dto.UserResponseDTO;
+import com.manu.springboot_backend.dto.*;
 import com.manu.springboot_backend.model.*;
 import com.manu.springboot_backend.repository.*;
 import com.manu.springboot_backend.security.JwtUtil;
@@ -165,6 +162,18 @@ public class ItemsController {
         }
         dto.setBranch(item.getBranch());
         dto.setProductCategory(item.getCategory());
+        if (item.getSupplier() != null) {
+            SupplierDTO supplierDTO = new SupplierDTO();
+            supplierDTO.setSupplierCode(item.getSupplier().getSupplierCode());
+            supplierDTO.setSupplierName(item.getSupplier().getSupplierName());
+            supplierDTO.setContactPerson(item.getSupplier().getContactPerson());
+            supplierDTO.setPhoneNumber(item.getSupplier().getPhoneNumber());
+            supplierDTO.setEmailAddress(item.getSupplier().getEmail());
+            supplierDTO.setPhysicalAddress(item.getSupplier().getPhysicalAddress());
+            supplierDTO.setPostalAddress(item.getSupplier().getPostalAddress());
+            dto.setSupplier(supplierDTO);
+        }
+
 
         dto.setModifiedTime(item.getModifiedTime());
         dto.setDeletedFlag(item.getDeletedFlag());
@@ -219,6 +228,18 @@ public class ItemsController {
 
                 dto.setDeletedBy(deletedBy);
             }
+            if (item.getSupplier() != null) {
+                SupplierDTO supplierDTO = new SupplierDTO();
+                supplierDTO.setSupplierCode(item.getSupplier().getSupplierCode());
+                supplierDTO.setSupplierName(item.getSupplier().getSupplierName());
+                supplierDTO.setContactPerson(item.getSupplier().getContactPerson());
+                supplierDTO.setPhoneNumber(item.getSupplier().getPhoneNumber());
+                supplierDTO.setEmailAddress(item.getSupplier().getEmail());
+                supplierDTO.setPhysicalAddress(item.getSupplier().getPhysicalAddress());
+                supplierDTO.setPostalAddress(item.getSupplier().getPostalAddress());
+                dto.setSupplier(supplierDTO);
+            }
+
 
             dto.setModifiedTime(item.getModifiedTime());
             dto.setDeletedFlag(item.getDeletedFlag());
