@@ -1,18 +1,18 @@
 package com.manu.springboot_backend.dto;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import com.manu.springboot_backend.model.Branch;
-import com.manu.springboot_backend.model.ProductCategory;
 import lombok.Data;
 
 @Data
-public class ItemResponseDTO {
+public class SupplierResponseDTO {
     private Long id;
-    private String name;
-    private String description;
-    private Integer count;
+    private String supplierCode;
+    private String supplierName;
+    private String contactPerson;
+    private String phoneNumber;
+    private String emailAddress;
+    private String physicalAddress;
+    private String postalAddress;
     private UserResponseDTO postedBy;
     private String postedFlag;
     private LocalDateTime postedTime;
@@ -21,7 +21,4 @@ public class ItemResponseDTO {
     private String deletedFlag;
     private UserResponseDTO deletedBy;
     private LocalDateTime deletedTime;
-    private Branch branch;
-    private ProductCategory productCategory;
-    private BigDecimal price;
 }

@@ -1,13 +1,11 @@
 package com.manu.springboot_backend.controller;
 
+import com.manu.springboot_backend.dto.BranchDTO;
 import com.manu.springboot_backend.dto.ItemResponseDTO;
 import com.manu.springboot_backend.dto.ItemsDTO;
 import com.manu.springboot_backend.dto.UserResponseDTO;
 import com.manu.springboot_backend.model.*;
-import com.manu.springboot_backend.repository.BranchRepository;
-import com.manu.springboot_backend.repository.ItemsRepository;
-import com.manu.springboot_backend.repository.ProductCategoryRepository;
-import com.manu.springboot_backend.repository.UserRepository;
+import com.manu.springboot_backend.repository.*;
 import com.manu.springboot_backend.security.JwtUtil;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +33,17 @@ public class ItemsController {
     private final UserRepository userRepository;
     private final BranchRepository branchRepository;
     private final ProductCategoryRepository productCategoryRepository;
+    private final SupplierRepository supplierRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
 
-    public ItemsController(ItemsRepository itemsRepository, UserRepository userRepository, BranchRepository branchRepository, ProductCategoryRepository productCategoryRepository) {
+    public ItemsController(ItemsRepository itemsRepository, UserRepository userRepository, BranchRepository branchRepository, ProductCategoryRepository productCategoryRepository, SupplierRepository supplierRepository) {
         this.itemsRepository = itemsRepository;
         this.userRepository = userRepository;
         this.branchRepository = branchRepository;
         this.productCategoryRepository = productCategoryRepository;
+        this.supplierRepository = supplierRepository;
     }
 
 
@@ -66,6 +66,11 @@ public class ItemsController {
         if (branch == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Branch not found"));
         }
+        // Fetch branch by branchId
+        Supplier supplier = supplierRepository.findById(itemsDTO.getSupplierId()).orElse(null);
+        ProductCategory category = (itemsDTO.getCategoryId() != null) ?
+                productCategoryRepository.findById(itemsDTO.getCategoryId()).orElse(null) : null;
+
 
 
         Optional<Item> existingItemOpt = itemsRepository.findByName(itemsDTO.getName());
@@ -101,9 +106,7 @@ public class ItemsController {
         item.setPostedTime(LocalDateTime.now());
         item.setPostedFlag("Y");
         item.setBranch(branch);
-        ProductCategory category = (itemsDTO.getCategoryId() != null) ?
-                productCategoryRepository.findById(itemsDTO.getCategoryId()).orElse(null) : null;
-
+        item.setSupplier(supplier);
         item.setCategory(category);
         item.setPrice(itemsDTO.getPrice());
 
@@ -128,6 +131,7 @@ public class ItemsController {
         dto.setCount(item.getCount());
         dto.setPostedFlag(item.getPostedFlag());
         dto.setPostedTime(item.getPostedTime());
+        dto.setPrice(item.getPrice());
 
         // Set the userDTO for postedBy, but exclude password
         UserResponseDTO postedBy = new UserResponseDTO();
@@ -159,6 +163,8 @@ public class ItemsController {
 
             dto.setDeletedBy(deletedBy);
         }
+        dto.setBranch(item.getBranch());
+        dto.setProductCategory(item.getCategory());
 
         dto.setModifiedTime(item.getModifiedTime());
         dto.setDeletedFlag(item.getDeletedFlag());
@@ -178,8 +184,8 @@ public class ItemsController {
             dto.setDescription(item.getDescription());
             dto.setCount(item.getCount());
             dto.setPrice(item.getPrice());
-            dto.setBranchId(item.getBranch().getId());
-            dto.setCategoryId(item.getCategory() != null ? item.getCategory().getId() : null);
+            dto.setBranch(item.getBranch());
+            dto.setProductCategory(item.getCategory());
             dto.setPostedFlag(item.getPostedFlag());
             dto.setPostedTime(item.getPostedTime());
 

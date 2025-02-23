@@ -12,4 +12,5 @@ public class ItemsDTO {
     private Integer count;
     private Long branchId;
     private Long categoryId;
+    private Long supplierId;
 }
