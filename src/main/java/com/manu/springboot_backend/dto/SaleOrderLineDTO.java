@@ -9,4 +9,5 @@ public class SaleOrderLineDTO {
     private Long itemId;
     private int quantity;
     private BigDecimal price;
+    private BigDecimal subTotal;
 }

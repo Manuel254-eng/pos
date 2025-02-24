@@ -40,21 +40,37 @@ public class SaleOrderService {
         saleOrder.setBranch(branch);
 
         List<SaleOrderLine> saleOrderLines = saleOrderDTO.getSaleOrderLines().stream().map(lineDTO -> {
+            // 🔹 Check if the item exists
             Item item = itemRepository.findById(lineDTO.getItemId())
                     .orElseThrow(() -> new RuntimeException("Item not found: " + lineDTO.getItemId()));
+
+            // 🔹 Check if item is flagged as deleted
+            if ("Y".equals(item.getDeletedFlag())) {
+                throw new RuntimeException("Item has been deleted: " + item.getName());
+            }
+
+            // 🔹 Ensure there is enough stock
+            if (item.getCount() < lineDTO.getQuantity()) {
+                throw new RuntimeException("Insufficient stock for item: " + item.getName());
+            }
+
+            // 🔹 Deduct the item count
+            item.setCount(item.getCount() - lineDTO.getQuantity());
+            itemRepository.save(item); // ✅ Save updated item stock
 
             SaleOrderLine saleOrderLine = new SaleOrderLine();
             saleOrderLine.setSaleOrder(saleOrder);
             saleOrderLine.setItem(item);
             saleOrderLine.setQuantity(lineDTO.getQuantity());
             saleOrderLine.setPrice(lineDTO.getPrice());
-            saleOrderLine.setTotal(lineDTO.getPrice().multiply(BigDecimal.valueOf(lineDTO.getQuantity())));
+            saleOrderLine.setExpectedSubtotal(lineDTO.getPrice().multiply(BigDecimal.valueOf(lineDTO.getQuantity())));
+            saleOrderLine.setSubTotal(lineDTO.getSubTotal());
 
             return saleOrderLine;
         }).collect(Collectors.toList());
 
         BigDecimal totalAmount = saleOrderLines.stream()
-                .map(SaleOrderLine::getTotal)
+                .map(SaleOrderLine::getSubTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         saleOrder.setSaleOrderLines(saleOrderLines);
@@ -62,6 +78,7 @@ public class SaleOrderService {
 
         return saleOrderRepository.save(saleOrder);
     }
+
 
     public List<SaleOrder> getAllSaleOrders() {
         return saleOrderRepository.findAll();
