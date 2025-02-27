@@ -18,7 +18,11 @@ public class SaleOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String customerName; // Can be null for walk-in customers
+    private String customerName; // Can be null
+
+    @Column(nullable = false, unique = true)
+    private String referenceNumber;
+
 
     @ManyToOne
     @JoinColumn(name = "branch_id", nullable = false)

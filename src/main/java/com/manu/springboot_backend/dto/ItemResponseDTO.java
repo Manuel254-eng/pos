@@ -25,4 +25,7 @@ public class ItemResponseDTO {
     private ProductCategory productCategory;
     private BigDecimal price;
     private SupplierDTO supplier;
+    private BigDecimal regularBuyingPrice;
+    private BigDecimal sellingPrice;
+    private Integer maxPercentageDiscount;
 }

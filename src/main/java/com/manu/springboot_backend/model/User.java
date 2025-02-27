@@ -37,6 +37,12 @@ public class User {
     @JoinColumn(name = "published_by", referencedColumnName = "id")
     private User publishedBy; // Reference to another user who published this user
 
+    @Enumerated(EnumType.STRING)
+    private ProfileStatus status;
+
+
+
+
 
 
 

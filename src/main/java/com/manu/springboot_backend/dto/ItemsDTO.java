@@ -8,9 +8,12 @@ import java.math.BigDecimal;
 public class ItemsDTO {
     private String name;
     private String description;
-    private BigDecimal price;
     private Integer count;
     private Long branchId;
     private Long categoryId;
     private Long supplierId;
+    private BigDecimal regularBuyingPrice;
+    private BigDecimal sellingPrice;
+    private Integer maxPercentageDiscount;
+
 }

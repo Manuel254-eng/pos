@@ -1,14 +1,15 @@
 package com.manu.springboot_backend.dto;
 
-
-import com.manu.springboot_backend.model.Role;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RegisterRequest {
+public class StoreDTO {
     private String name;
+    private String description;
+    private String location;
+    private String contactNumber;
     private String email;
-    private String password;
 }

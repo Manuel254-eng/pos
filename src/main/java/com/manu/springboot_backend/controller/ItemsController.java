@@ -105,7 +105,9 @@ public class ItemsController {
         item.setBranch(branch);
         item.setSupplier(supplier);
         item.setCategory(category);
-        item.setPrice(itemsDTO.getPrice());
+        item.setRegularBuyingPrice(itemsDTO.getRegularBuyingPrice());
+        item.setSellingPrice(itemsDTO.getSellingPrice());
+        item.setMaxPercentageDiscount(itemsDTO.getMaxPercentageDiscount());
 
         itemsRepository.save(item);
         return ResponseEntity.ok(Map.of("message", "Item added successfully", "status", HttpStatus.CREATED.value()));
@@ -128,7 +130,9 @@ public class ItemsController {
         dto.setCount(item.getCount());
         dto.setPostedFlag(item.getPostedFlag());
         dto.setPostedTime(item.getPostedTime());
-        dto.setPrice(item.getPrice());
+        dto.setRegularBuyingPrice(item.getRegularBuyingPrice());
+        dto.setSellingPrice(item.getSellingPrice());
+        dto.setMaxPercentageDiscount(item.getMaxPercentageDiscount());
 
         // Set the userDTO for postedBy, but exclude password
         UserResponseDTO postedBy = new UserResponseDTO();
@@ -192,7 +196,9 @@ public class ItemsController {
             dto.setName(item.getName());
             dto.setDescription(item.getDescription());
             dto.setCount(item.getCount());
-            dto.setPrice(item.getPrice());
+            dto.setRegularBuyingPrice(item.getRegularBuyingPrice());
+            dto.setSellingPrice(item.getSellingPrice());
+            dto.setMaxPercentageDiscount(item.getMaxPercentageDiscount());
             dto.setBranch(item.getBranch());
             dto.setProductCategory(item.getCategory());
             dto.setPostedFlag(item.getPostedFlag());
@@ -291,8 +297,9 @@ public class ItemsController {
         item.setModifiedBy(adminUser);
         item.setModifiedFlag("Y");
         item.setModifiedTime(LocalDateTime.now());
-        item.setPrice(itemsDTO.getPrice());
-
+        item.setRegularBuyingPrice(itemsDTO.getRegularBuyingPrice());
+        item.setSellingPrice(itemsDTO.getSellingPrice());
+        item.setMaxPercentageDiscount(itemsDTO.getMaxPercentageDiscount());
         itemsRepository.save(item);
 
         return ResponseEntity.ok(Map.of("message", "Item updated successfully"));

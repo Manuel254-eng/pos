@@ -1,6 +1,7 @@
 package com.manu.springboot_backend.controller;
 
 import com.manu.springboot_backend.dto.UserDTO;
+import com.manu.springboot_backend.model.ProfileStatus;
 import com.manu.springboot_backend.model.Role;
 import com.manu.springboot_backend.model.User;
 import com.manu.springboot_backend.repository.UserRepository;
@@ -63,6 +64,7 @@ public class UserController {
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRole(userDTO.getRole());
         user.setPublishedBy(adminUser); // Set the publishedBy field
+
 
         userRepository.save(user);
         return ResponseEntity.ok(Map.of("message", "User added successfully", "status", HttpStatus.OK.value()));

@@ -2,6 +2,7 @@ package com.manu.springboot_backend.controller;
 
 import com.manu.springboot_backend.dto.LoginRequest;
 import com.manu.springboot_backend.dto.RegisterRequest;
+import com.manu.springboot_backend.model.ProfileStatus;
 import com.manu.springboot_backend.model.Role;
 import com.manu.springboot_backend.model.User;
 import com.manu.springboot_backend.repository.UserRepository;
@@ -29,36 +30,39 @@ public class AuthController {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
-//    @PostMapping("/register")
-//    public ResponseEntity<Map<String, Object>> register(@RequestBody RegisterRequest registerRequest) {
-//        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-//            return ResponseEntity
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .body(Map.of("status", "error", "message", "Email already in use"));
-//        }
-//
-//        User user = new User();
-//        user.setName(registerRequest.getName());
-//        user.setEmail(registerRequest.getEmail());
-//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-//
-//        // Assign role, default to BORROWER if not provided
-//        user.setRole(registerRequest.getRole() != null ? registerRequest.getRole() : Role.CASHIER);
-//
-//        User savedUser = userRepository.save(user);
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body(Map.of(
-//                        "status", "success",
-//                        "message", "User registered successfully",
-//                        "user", Map.of(
-//                                "id", savedUser.getId(),
-//                                "name", savedUser.getName(),
-//                                "email", savedUser.getEmail(),
-//                                "role", savedUser.getRole().name()
-//                        )
-//                ));
-//    }
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, Object>> register(@RequestBody RegisterRequest registerRequest) {
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", "error", "message", "Email already in use"));
+        }
+
+        User user = new User();
+        user.setName(registerRequest.getName());
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
+        // Assign an admin role by default // This is for first instance when someone wants to access the POS
+        user.setRole(Role.ADMIN);
+
+        user.setStatus(ProfileStatus.INACTIVE);
+
+
+        User savedUser = userRepository.save(user);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(Map.of(
+                        "status", "success",
+                        "message", "User registered successfully",
+                        "user", Map.of(
+                                "id", savedUser.getId(),
+                                "name", savedUser.getName(),
+                                "email", savedUser.getEmail(),
+                                "role", savedUser.getRole().name()
+                        )
+                ));
+    }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest loginRequest) {

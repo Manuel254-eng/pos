@@ -5,6 +5,7 @@ import com.manu.springboot_backend.dto.SaleOrderLineDTO;
 import com.manu.springboot_backend.model.*;
 import com.manu.springboot_backend.repository.*;
 
+import com.manu.springboot_backend.util.SaleOrderHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,16 +20,20 @@ public class SaleOrderService {
     private final SaleOrderLineRepository saleOrderLineRepository;
     private final BranchRepository branchRepository;
     private final ItemsRepository itemRepository;
+    private final SaleOrderHelper saleOrderHelper;
 
     public SaleOrderService(SaleOrderRepository saleOrderRepository,
                             SaleOrderLineRepository saleOrderLineRepository,
                             BranchRepository branchRepository,
-                            ItemsRepository itemRepository) {
+                            ItemsRepository itemRepository,
+                            SaleOrderHelper saleOrderHelper) {
         this.saleOrderRepository = saleOrderRepository;
         this.saleOrderLineRepository = saleOrderLineRepository;
         this.branchRepository = branchRepository;
         this.itemRepository = itemRepository;
+        this.saleOrderHelper = saleOrderHelper;
     }
+
 
     @Transactional
     public SaleOrder createSaleOrder(SaleOrderDTO saleOrderDTO) {
@@ -37,26 +42,23 @@ public class SaleOrderService {
 
         SaleOrder saleOrder = new SaleOrder();
         saleOrder.setCustomerName(saleOrderDTO.getCustomerName());
+        saleOrder.setReferenceNumber(saleOrderHelper.generateNextReferenceNumber()); // ✅ Call helper function
         saleOrder.setBranch(branch);
 
         List<SaleOrderLine> saleOrderLines = saleOrderDTO.getSaleOrderLines().stream().map(lineDTO -> {
-            // 🔹 Check if the item exists
             Item item = itemRepository.findById(lineDTO.getItemId())
                     .orElseThrow(() -> new RuntimeException("Item not found: " + lineDTO.getItemId()));
 
-            // 🔹 Check if item is flagged as deleted
             if ("Y".equals(item.getDeletedFlag())) {
                 throw new RuntimeException("Item has been deleted: " + item.getName());
             }
 
-            // 🔹 Ensure there is enough stock
             if (item.getCount() < lineDTO.getQuantity()) {
                 throw new RuntimeException("Insufficient stock for item: " + item.getName());
             }
 
-            // 🔹 Deduct the item count
             item.setCount(item.getCount() - lineDTO.getQuantity());
-            itemRepository.save(item); // ✅ Save updated item stock
+            itemRepository.save(item);
 
             SaleOrderLine saleOrderLine = new SaleOrderLine();
             saleOrderLine.setSaleOrder(saleOrder);
@@ -78,8 +80,6 @@ public class SaleOrderService {
 
         return saleOrderRepository.save(saleOrder);
     }
-
-
     public List<SaleOrder> getAllSaleOrders() {
         return saleOrderRepository.findAll();
     }
@@ -87,4 +87,13 @@ public class SaleOrderService {
     public Optional<SaleOrder> getSaleOrderById(Long id) {
         return saleOrderRepository.findById(id);
     }
+
+    public long countSaleOrders() {
+        return saleOrderRepository.count();
+    }
+
+
+
+
+
 }
